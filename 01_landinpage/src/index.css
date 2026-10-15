@@ -9,6 +9,7 @@
 body {
   background-color: #000;
   color: #fff;
+  overflow-x: hidden;
 }
 
 /* 2. ESTRUTURA PRINCIPAL (HOME) */
@@ -53,7 +54,7 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px; /* Espaço entre o botão de Login e o Hambúrguer */
+  gap: 16px;
 }
 
 .header-actions button,
@@ -66,15 +67,15 @@ body {
   font-weight: bold;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.2s;
 }
 
 .header-actions button:hover,
 .col1 button:hover {
   background-color: #0000cc;
+  transform: translateY(-2px);
 }
 
-/* Esconde o botão do menu hambúrguer no Desktop */
 .menu-toggle {
   display: none;
 }
@@ -123,20 +124,60 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #222; /* Fundo de fallback caso a imagem falhe */
+  background-color: #222;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Mapeamento das imagens colocadas em src/assets/ */
-.card1 { background-image: url("./assets/afterlife.jpg"); }
-.card2 { background-image: url("./assets/transformers.jpg"); }
-.card3 { background-image: url("./assets/mowgli.jpg"); }
-.card4 { background-image: url("./assets/shift.png"); }
-.card5 { background-image: url("./assets/squidgame.webp"); }
-.card6 { background-image: url("./assets/harrypotter.jpg"); }
+.card:hover,
+.card:focus-visible {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 255, 0.4);
+  outline: 2px solid #0000ff;
+}
 
-/* 6. RESPONSIVIDADE (MEDIA QUERIES) */
+/* Posicionamento fixo do badge com a estrela e nota */
+.movie-rating {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #ffca28;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
 
-/* Tablets / Celulares Grandes (Abaixo de 900px) */
+/* Overlay do título no fundo do card */
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%);
+  padding: 16px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.movie-title {
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 6. RESPONSIVIDADE E CARROSSEL */
+
 @media (max-width: 900px) {
   .home {
     padding: 0 20px;
@@ -152,11 +193,6 @@ body {
     max-width: 100%;
   }
 
-  .cards {
-    width: 100%; /* Garante que o grid ocupe a largura toda no mobile */
-  }
-
-  /* Estilização e Exibição do botão do menu hambúrguer */
   .menu-toggle {
     display: flex;
     flex-direction: column;
@@ -199,18 +235,44 @@ body {
   }
 }
 
-/* Celulares (Abaixo de 600px) */
+/* AJUSTES DO CARROSSEL AUTOMÁTICO MOBILE (Abaixo de 600px) */
 @media (max-width: 600px) {
   .cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding: 10px 0 20px 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cards::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .cards::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
   }
 
   .card {
-    height: 150px;
+    flex: 0 0 85%; /* Largura ajustada para destacar o card ativo */
+    height: 220px;
+    scroll-snap-align: center;
   }
 
   .col1 h2 {
     font-size: 32px;
+  }
+}
+
+/* REDUÇÃO DE MOVIMENTO (Acessibilidade) */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .header-actions button,
+  .col1 button {
+    transition: none !important;
+    transform: none !important;
   }
 }
